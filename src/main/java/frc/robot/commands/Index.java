@@ -10,15 +10,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
 
 public class Index extends CommandBase {
-  private final Indexer indexer = Indexer.getInstance();
-  private final BooleanSupplier intake;
-  private final BooleanSupplier exhaust;
+  private final Indexer mIndexer = Indexer.getInstance();
+  private final BooleanSupplier mIntake;
+  private final BooleanSupplier mExhaust;
 
   public Index(BooleanSupplier i, BooleanSupplier e) {
-    intake = i;
-    exhaust = e;
+    mIntake = i;
+    mExhaust = e;
 
-    addRequirements(indexer);
+    addRequirements(mIndexer);
   }
 
 // Called when the command is initially scheduled.
@@ -30,12 +30,12 @@ public class Index extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.getAsBoolean()) {
-        indexer.setSpeed(1);
-    } else if (exhaust.getAsBoolean()) {
-        indexer.setSpeed(-1);
+    if (mIntake.getAsBoolean()) {
+        mIndexer.setSpeed(1);
+    } else if (mExhaust.getAsBoolean()) {
+        mIndexer.setSpeed(-1);
     } else {
-        indexer.setSpeed(0);
+        mIndexer.setSpeed(0);
     }
   }
 

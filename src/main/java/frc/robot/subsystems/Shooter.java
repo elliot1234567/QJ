@@ -20,7 +20,7 @@ public class Shooter extends SubsystemBase {
 
     private static BooleanSupplier mFire;
 
-    private static double currentSpeed = 0;
+    private static double mCurrentSpeed = 0;
 
     public Shooter() {
         mFollower.follow(mLeader, true);
@@ -35,12 +35,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        if (mLeaderEncoder.getVelocity() <= ((currentSpeed * Constants.kMaxRPMs) + Constants.kShootingTolerance) && mLeaderEncoder.getVelocity() >= ((currentSpeed * Constants.kMaxRPMs) - Constants.kShootingTolerance)) {
+        if (mLeaderEncoder.getVelocity() <= ((mCurrentSpeed * Constants.kMaxRPMs) + Constants.kShootingTolerance) && mLeaderEncoder.getVelocity() >= ((mCurrentSpeed * Constants.kMaxRPMs) - Constants.kShootingTolerance)) {
             mFire = () -> true;
         } else {
             mFire = () -> false;
         }
-        mLeader.set(currentSpeed);
+        mLeader.set(mCurrentSpeed);
     }
 
     public void autoShoot(double speed) {
@@ -73,6 +73,6 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
-        currentSpeed = speed;
+        mCurrentSpeed = speed;
     }
 }

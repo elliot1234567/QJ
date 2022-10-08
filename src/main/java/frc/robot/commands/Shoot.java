@@ -8,42 +8,42 @@ import frc.robot.subsystems.Shooter;
 
 public class Shoot extends CommandBase {
     private static Shooter mShooter = Shooter.getInstance();
-    private BooleanSupplier shoot;
-    private BooleanSupplier preset1;
-    private BooleanSupplier preset2;
-    private BooleanSupplier preset3;
-    private BooleanSupplier preset4;
+    private BooleanSupplier mShoot;
+    private BooleanSupplier mPreset1;
+    private BooleanSupplier mPreset2;
+    private BooleanSupplier mPreset3;
+    private BooleanSupplier mPreset4;
 
 
     public Shoot(BooleanSupplier s, BooleanSupplier p1, BooleanSupplier p2, BooleanSupplier p3, BooleanSupplier p4) {
-        shoot = s;
-        preset1 = p1;
-        preset2 = p2;
-        preset3 = p3;
-        preset4 = p4;
+        mShoot = s;
+        mPreset1 = p1;
+        mPreset2 = p2;
+        mPreset3 = p3;
+        mPreset4 = p4;
 
         addRequirements(mShooter);
     }
 
     @Override
     public void execute() {
-        if (preset1.getAsBoolean()) {
+        if (mPreset1.getAsBoolean()) {
             mShooter.setSpeed(Constants.cargoRingSpeed);
         }
 
-        else if (preset2.getAsBoolean()) {
+        else if (mPreset2.getAsBoolean()) {
             mShooter.setSpeed(Constants.preset1);
         }
 
-        else if (preset3.getAsBoolean()) {
+        else if (mPreset3.getAsBoolean()) {
             mShooter.setSpeed(Constants.preset2);
         }
 
-        else if (preset4.getAsBoolean()) {
+        else if (mPreset4.getAsBoolean()) {
             mShooter.setSpeed(Constants.preset3);
         }
 
-        else if (shoot.getAsBoolean()) {
+        else if (mShoot.getAsBoolean()) {
             mShooter.shoot();
         }
 

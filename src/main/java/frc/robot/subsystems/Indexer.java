@@ -6,11 +6,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
-    static Indexer mInstance;
-    CANSparkMax indexer = new CANSparkMax(5, MotorType.kBrushless);
+    private static Indexer mInstance;
+    private CANSparkMax mIndexer;
 
     public Indexer() {
-
+        mIndexer = new CANSparkMax(5, MotorType.kBrushless);
     }
 
     public static Indexer getInstance() {
@@ -21,6 +21,6 @@ public class Indexer extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
-        indexer.set(0);
+        mIndexer.set(0);
     }
 }

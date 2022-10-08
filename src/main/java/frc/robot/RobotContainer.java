@@ -25,13 +25,13 @@ import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  DriveTrain driveTrain = DriveTrain.getInstance();
-  Indexer indexer = Indexer.getInstance();
-  Shooter shooter = Shooter.getInstance();
+  DriveTrain mDriveTrain = DriveTrain.getInstance();
+  Indexer mIndexer = Indexer.getInstance();
+  Shooter mShooter = Shooter.getInstance();
 
-  Drive drive;
-  Index index;
-  Shoot shoot;
+  Drive mDrive;
+  Index mIndex;
+  Shoot mShoot;
 
   SendableChooser<CommandGroupBase> autoChooser;
 
@@ -49,18 +49,16 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    XboxController controller = new XboxController(0);
-    Joystick joystick = new Joystick(1);
+    XboxController mController = new XboxController(0);
+    Joystick mJoystick = new Joystick(1);
 
-    // index = new Index(indexer, () -> controller.getAButton(), () -> controller.getBButton());
-    // lift = new Lift(lifter, () -> controller.getXButton(), () -> controller.getYButton());
-    drive = new Drive(() -> controller.getRightX(), () -> controller.getLeftY());
-    index = new Index(() -> joystick.getRawButton(2), () -> joystick.getRawButton(3));
-    shoot = new Shoot(() -> joystick.getRawButton(1), () -> joystick.getRawButton(7), () -> joystick.getRawButton(8), () -> joystick.getRawButton(9), () -> joystick.getRawButton(10));
+    mDrive = new Drive(() -> mController.getRightX(), () -> mController.getLeftY());
+    mIndex = new Index(() -> mJoystick.getRawButton(2), () -> mJoystick.getRawButton(3));
+    mShoot = new Shoot(() -> mJoystick.getRawButton(1), () -> mJoystick.getRawButton(7), () -> mJoystick.getRawButton(8), () -> mJoystick.getRawButton(9), () -> mJoystick.getRawButton(10));
 
-    driveTrain.setDefaultCommand(drive);
-    indexer.setDefaultCommand(index);
-    shooter.setDefaultCommand(shoot);
+    mDriveTrain.setDefaultCommand(mDrive);
+    mIndexer.setDefaultCommand(mIndex);
+    mShooter.setDefaultCommand(mShoot);
   }
 
   public Command getAutonomousCommand() {
