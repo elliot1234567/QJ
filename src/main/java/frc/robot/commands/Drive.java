@@ -10,12 +10,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
 public class Drive extends CommandBase {
-  private final DriveTrain driveTrain;
+  private final DriveTrain driveTrain = DriveTrain.getInstance();
   private final DoubleSupplier forwardAxis;
   private final DoubleSupplier turnAxis;
 
-  public Drive(DriveTrain DT, DoubleSupplier f_Axis, DoubleSupplier t_axis) {
-    driveTrain = DT;
+  public Drive(DoubleSupplier f_Axis, DoubleSupplier t_axis) {
     forwardAxis = f_Axis;
     turnAxis = t_axis;
 

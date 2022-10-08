@@ -44,4 +44,10 @@ public final class Constants {
 
     // trajectory constants
     public static final double TRACK_WIDTH = 0;
+    public static final double kMaxRPMs = 5700;
+    public static final double kShootingTolerance = 0;
+    public static final double cargoRingSpeed = 0;
+    public static final double preset1 = 0;
+    public static final double preset2 = 0;
+    public static final double preset3 = 0;
 }

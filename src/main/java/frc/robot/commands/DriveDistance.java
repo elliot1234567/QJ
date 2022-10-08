@@ -1,4 +1,4 @@
-package frc.robot.commands.AutoCommands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
@@ -6,10 +6,18 @@ import frc.robot.subsystems.DriveTrain;
 public class DriveDistance extends CommandBase {
     double setpoint;
     boolean finished;
-    DriveTrain driveTrain;
+    double power;
+    private static DriveTrain driveTrain = DriveTrain.getInstance();
 
-    public DriveDistance(DriveTrain DT, double s) {
-        driveTrain = DT;
+    public DriveDistance(double s, double p) {
+        power = p;
+        setpoint = s;
+
+        addRequirements(driveTrain);
+    }
+
+    public DriveDistance(double s) {
+        power = 0.33;
         setpoint = s;
 
         addRequirements(driveTrain);
@@ -27,28 +35,19 @@ public class DriveDistance extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        driveTrain.setAngle(0);
-        if (driveTrain.atSetpoint()) {
-            finished = true;
-        } else {
-            driveTrain.update();
-        }
+        finished = driveTrain.atSetpoint();
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         driveTrain.drive(0, 0);
+        driveTrain.resetEncoders();
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (finished) {
-            driveTrain.rotateSlow();
-            driveTrain.resetEncoders();
-            driveTrain.resetGyro();
-        }
         return finished;
     }
 }

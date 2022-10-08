@@ -15,6 +15,8 @@ import frc.robot.Constants;
 
 public class DriveTrain extends SubsystemBase {
 
+    static DriveTrain mInstance;
+
     CANSparkMax leftLeader;
     CANSparkMax rightLeader;
     
@@ -44,11 +46,14 @@ public class DriveTrain extends SubsystemBase {
     double kI;
     double kD;
 
+    double leftDefault = 0.5;
+    double rightDefault = 0.5;
+
     public DriveTrain() {
         leftLeader = new CANSparkMax(1, MotorType.kBrushless);
-        rightLeader = new CANSparkMax(3, MotorType.kBrushless);
+        rightLeader = new CANSparkMax(2, MotorType.kBrushless);
 
-        leftFollower = new CANSparkMax(2, MotorType.kBrushless);
+        leftFollower = new CANSparkMax(3, MotorType.kBrushless);
         rightFollower = new CANSparkMax(4, MotorType.kBrushless);
 
         leftEncoder = leftLeader.getEncoder();
@@ -73,8 +78,6 @@ public class DriveTrain extends SubsystemBase {
         rightController.setI(Constants.kI);
         rightController.setD(Constants.kD);
 
-        leftController.setOutputRange(-0.5, 0.5);
-        rightController.setOutputRange(-0.5, 0.5);
 
         drive.setSafetyEnabled(false);
     }
@@ -85,8 +88,8 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void drive(double f, double t) {
-        // drive.arcadeDrive(t, f);
-        drive.arcadeDrive(f, t);
+        drive.arcadeDrive(t*0.7, f*0.7);
+        // drive.arcadeDrive(f, t);
         SmartDashboard.putNumber("leftEncoder", leftEncoder.getPosition());
         SmartDashboard.putNumber("rightEncoder", rightEncoder.getPosition());
     }
@@ -95,9 +98,23 @@ public class DriveTrain extends SubsystemBase {
         setpoint = s * (Constants.GEAR_BOX_RATIO / Constants.WHEEL_CIRCUMFERENCE) * Constants.ELLIOT_COEFFICIENT;  // MAKE SURE TO CONVERT FROM METERS TO ROTATIONS BEFORE MULTIPLYING BY THIS COEFFICIENT 1 ROTATION = THE COEFFICIENT
     }
 
-    public void drivePID() {
+    public void drivePID(double speed) {
+        leftController.setOutputRange(-speed, speed);
+        rightController.setOutputRange(-speed, speed);
+
         leftController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
-        rightController.setReference(-setpoint, CANSparkMax.ControlType.kPosition);
+        rightController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+
+        SmartDashboard.putNumber("leftEncoder", Math.abs(leftEncoder.getPosition()));
+        SmartDashboard.putNumber("rightEncoder", Math.abs(rightEncoder.getPosition()));
+    }
+
+    public void drivePID() {
+        leftController.setOutputRange(-leftDefault, leftDefault);
+        rightController.setOutputRange(-rightDefault, rightDefault);
+
+        leftController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+        rightController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
 
         SmartDashboard.putNumber("leftEncoder", Math.abs(leftEncoder.getPosition()));
         SmartDashboard.putNumber("rightEncoder", Math.abs(rightEncoder.getPosition()));
@@ -146,11 +163,11 @@ public class DriveTrain extends SubsystemBase {
         }
 
         if (finalAngle < 0) {
-            drive.arcadeDrive(-0.5, 0);
+            drive.arcadeDrive(0, -0.5);
         }
 
         if (finalAngle > 0) {
-            drive.arcadeDrive(0.5, 0);
+            drive.arcadeDrive(0, 0.5);
         }
         return false;
     }
@@ -166,11 +183,11 @@ public class DriveTrain extends SubsystemBase {
         }
 
         if (finalAngle < 0) {
-            drive.arcadeDrive(-0.25, 0);
+            drive.arcadeDrive(-0.35, 0);
         }
 
         if (finalAngle > 0) {
-            drive.arcadeDrive(0.25, 0);
+            drive.arcadeDrive(0.35, 0);
         }
         return false;
     }
@@ -229,5 +246,12 @@ public class DriveTrain extends SubsystemBase {
 
     public void setRotationalPID(double kP, double kI, double kD) {
         gyroController.setPID(kP, kI, kD);
+    }
+
+    public static DriveTrain getInstance() {
+        if (mInstance == null) {
+            mInstance = new DriveTrain();
+        }
+        return mInstance;
     }
 }
