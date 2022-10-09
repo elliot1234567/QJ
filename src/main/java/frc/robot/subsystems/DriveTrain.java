@@ -76,7 +76,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void setSetpoint(double s) {
-        mSetpoint = s * (Constants.GEAR_BOX_RATIO / Constants.WHEEL_CIRCUMFERENCE) * Constants.ELLIOT_COEFFICIENT;  // MAKE SURE TO CONVERT FROM METERS TO ROTATIONS BEFORE MULTIPLYING BY THIS COEFFICIENT 1 ROTATION = THE COEFFICIENT
+        mSetpoint = s * (Constants.GEAR_BOX_RATIO / Constants.WHEEL_CIRCUMFERENCE);
     }
 
     public void drivePID(double speed) {
