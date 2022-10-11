@@ -33,8 +33,8 @@ public final class Constants {
     public static final double kShootingTolerance = 10; // 10 rpms for shooter
 
     // shooting constants
-    public static final double cargoRingSpeed = 0; // .set() value for speed at the cargo ring
-    public static final double preset1 = 0; // ^^^
-    public static final double preset2 = 0; // ^^^
-    public static final double preset3 = 0; // ^^^
+    public static final double cargoRingSpeed = 0.4; // .set() value for speed at the cargo ring
+    public static final double preset1 = 0.5; // ^^^
+    public static final double preset2 = 0.75; // ^^^
+    public static final double preset3 = 1; // ^^^
 }

@@ -32,6 +32,7 @@ public class DriveTrain extends SubsystemBase {
     private ADXRS450_Gyro mGyro; // defining our gyroscope
     
     private double mSetpoint; // defining a double that represents a setpoint for PID control
+    private double mAngle;
 
     private double mLeftDefault = 0.5; // default max speeds
     private double mRightDefault = 0.5; // ^^^
@@ -72,10 +73,12 @@ public class DriveTrain extends SubsystemBase {
 
         mDrive.setSafetyEnabled(false); // weird error occurs when this isnt there - probably don't actually do this
     }
-
-    public void resetEncoders() { // method to reset the encoders to 0
-        mLeftEncoder.setPosition(0); // resetting encoder position
-        mRightEncoder.setPosition(0); // ^^^
+    
+    public static DriveTrain getInstance() { // method to get the static instance of the drivetrain
+        if (mInstance == null) { // if the drivetrain is not defined
+            mInstance = new DriveTrain(); // define it
+        }
+        return mInstance; // return the drivetrain instance
     }
 
     public void drive(double f, double t) { // our drive method
@@ -105,10 +108,6 @@ public class DriveTrain extends SubsystemBase {
         mRightController.setReference(mSetpoint, CANSparkMax.ControlType.kPosition); // ^^^
     }
 
-    public void resetGyro() { // method to reset the gyroscope heading to 0
-        mGyro.reset(); // reset gyroscope heading to 0
-    }
-
     public boolean atSetpoint() { // method to check to see if the encoder position = the setpoint
         if (Math.abs(mSetpoint) <= Math.abs(mLeftEncoder.getPosition())) { // if the encoder position >= the setpoint, use absolute value because both values are vectors
             return true; // return true
@@ -116,10 +115,30 @@ public class DriveTrain extends SubsystemBase {
         return false; // return false
     }
 
-    public static DriveTrain getInstance() { // method to get the static instance of the drivetrain
-        if (mInstance == null) { // if the drivetrain is not defined
-            mInstance = new DriveTrain(); // define it
+    public void setAngle(double angle) { // method to set the angle for use in the turn method
+        mAngle = angle; // setting the instance variable to be the parameter
+    }
+
+    public void turn() { // method to turn the robot to a specific angle
+        if (mAngle < mGyro.getAngle()) { // if the specified angle is less than the angle of the robot
+            mLeftLeader.set(1); // set the robot to turn
+            mRightLeader.set(-1); // ^^^
+        } else if (mAngle > mGyro.getAngle()) { // ^^^
+            mLeftLeader.set(-1); // ^^^
+            mRightLeader.set(1); // ^^^
         }
-        return mInstance; // return the drivetrain instance
+    }
+
+    public boolean atAngle() {
+        return (mAngle == mGyro.getAngle());
+    }
+    
+    public void resetEncoders() { // method to reset the encoders to 0
+        mLeftEncoder.setPosition(0); // resetting encoder position
+        mRightEncoder.setPosition(0); // ^^^
+    }
+
+    public void resetGyro() { // method to reset the gyroscope heading to 0
+        mGyro.reset(); // reset gyroscope heading to 0
     }
 }
