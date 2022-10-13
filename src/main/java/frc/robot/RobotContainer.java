@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import frc.robot.commands.Drive;
@@ -34,10 +35,16 @@ public class RobotContainer {
   private Index mIndex; // defining index command object
   private Shoot mShoot; // defining shoot command object
 
-  SendableChooser<CommandGroupBase> mAutoChooser = new SendableChooser<CommandGroupBase>(); // defining autochooser smartdashboard widget
+  SendableChooser<CommandGroupBase> mAutoChooser; // defining autochooser smartdashboard widget
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    mAutoChooser = new SendableChooser<CommandGroupBase>();
+    mAutoChooser.addOption("TwoBall", new TwoBall());
+    mAutoChooser.addOption("ThreeBall", new ThreeBall());
+
+    SmartDashboard.putData(mAutoChooser);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -60,8 +67,6 @@ public class RobotContainer {
     mDriveTrain.setDefaultCommand(mDrive);
     mIndexer.setDefaultCommand(mIndex);
     mShooter.setDefaultCommand(mShoot);
-
-    mAutoChooser.addOption("TwoBall", new TwoBall());
   }
 
   public Command getAutonomousCommand() {
