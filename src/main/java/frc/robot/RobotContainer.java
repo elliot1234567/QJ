@@ -7,12 +7,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Index;
-import frc.robot.commands.Routine;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.autoroutines.ThreeBall;
+import frc.robot.commands.autoroutines.TwoBall;
 import frc.robot.subsystems.DriveTrain;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,18 +27,24 @@ import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  DriveTrain mDriveTrain = DriveTrain.getInstance();
-  Indexer mIndexer = Indexer.getInstance();
-  Shooter mShooter = Shooter.getInstance();
+  private DriveTrain mDriveTrain = DriveTrain.getInstance(); // getting instance of the drivetrain
+  private Indexer mIndexer = Indexer.getInstance(); // getting instance of the indexer
+  private Shooter mShooter = Shooter.getInstance(); // getting instance of the shooter
 
-  Drive mDrive;
-  Index mIndex;
-  Shoot mShoot;
+  private Drive mDrive; // defining drive command object
+  private Index mIndex; // defining index command object
+  private Shoot mShoot; // defining shoot command object
 
-  SendableChooser<CommandGroupBase> autoChooser;
+  SendableChooser<CommandGroupBase> mAutoChooser; // defining autochooser smartdashboard widget
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    mAutoChooser = new SendableChooser<CommandGroupBase>();
+    mAutoChooser.addOption("TwoBall", new TwoBall());
+    mAutoChooser.addOption("ThreeBall", new ThreeBall());
+
+    SmartDashboard.putData(mAutoChooser);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -54,7 +62,7 @@ public class RobotContainer {
 
     mDrive = new Drive(() -> mController.getRightX(), () -> mController.getLeftY());
     mIndex = new Index(() -> mJoystick.getRawButton(2), () -> mJoystick.getRawButton(3));
-    mShoot = new Shoot(() -> mJoystick.getRawButton(1), () -> mJoystick.getRawButton(7), () -> mJoystick.getRawButton(8), () -> mJoystick.getRawButton(9), () -> mJoystick.getRawButton(10));
+    mShoot = new Shoot(() -> mJoystick.getRawButton(1), () -> mJoystick.getRawButton(7), () -> mJoystick.getRawButton(8), () -> mJoystick.getRawButton(9), () -> mJoystick.getRawButton(10), () -> mJoystick.getRawButton(11));
 
     mDriveTrain.setDefaultCommand(mDrive);
     mIndexer.setDefaultCommand(mIndex);
@@ -62,6 +70,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new Routine();
+    return new ThreeBall();
   }
 }
