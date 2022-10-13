@@ -18,8 +18,6 @@ public class Shooter extends SubsystemBase { // defining class as a child of the
 
     private RelativeEncoder mLeaderEncoder; // defining encoder for interface with the NEO encoder
 
-    private BooleanSupplier mFire; // defining a booleansupplier for checking whether the shooter is up to speed
-
     private double mCurrentSpeed = 0; // defining double for the current speed setting of the flywheel
 
     public Shooter() {
@@ -40,20 +38,10 @@ public class Shooter extends SubsystemBase { // defining class as a child of the
     }
 
     public void rampUp() { // method to ramp up the shooter speed and check if it is at the desired speed
-        if (mLeaderEncoder.getVelocity() <= ((mCurrentSpeed * Constants.kMaxRPMs) + Constants.kShootingTolerance) && mLeaderEncoder.getVelocity() >= ((mCurrentSpeed * Constants.kMaxRPMs) - Constants.kShootingTolerance)) { // if the speed is within a certain tolerance of the desired speed
-            mFire = () -> true; // set mFire to true
-        } else { // otherwise
-            mFire = () -> false; // set mFire to false
-        }
         mLeader.set(mCurrentSpeed); // actually set the speed
     }
 
     public void autoRampUp(double speed) { // ^^^ except with a parameter for the speed so you dont need to set it
-        if (mLeaderEncoder.getVelocity() <= ((speed * Constants.kMaxRPMs) + Constants.kShootingTolerance) && mLeaderEncoder.getVelocity() >= ((speed * Constants.kMaxRPMs) - Constants.kShootingTolerance)) { // ^^^
-            mFire = () -> true; // ^^^
-        } else { // ^^^
-            mFire = () -> false; // ^^^
-        }
         mLeader.set(speed); // ^^^
     }
 
@@ -66,10 +54,22 @@ public class Shooter extends SubsystemBase { // defining class as a child of the
     }
 
     public BooleanSupplier getFire() { // method to get whether we are up to speed
-        return mFire;
+        return () -> (mLeaderEncoder.getVelocity() <= ((mCurrentSpeed * Constants.kMaxRPMs) + Constants.kShootingTolerance) && mLeaderEncoder.getVelocity() >= ((mCurrentSpeed * Constants.kMaxRPMs) - Constants.kShootingTolerance)); // if the speed is within a certain tolerance of the desired speed
+    }
+
+    public BooleanSupplier autoGetFire(double speed) { // method to get whether we are up to speed
+        return () -> (mLeaderEncoder.getVelocity() <= ((speed * Constants.kMaxRPMs) + Constants.kShootingTolerance) && mLeaderEncoder.getVelocity() >= ((speed * Constants.kMaxRPMs) - Constants.kShootingTolerance)); // if the speed is within a certain tolerance of the desired speed
     }
 
     public void setSpeed(double speed) { // method to set the speed variable for use in the shoot methods
         mCurrentSpeed = speed;
+    }
+
+    public void off() {
+        mLeader.set(0);
+    }
+
+    public void antiShooter() {
+        mLeader.set(-0.25);
     }
 }

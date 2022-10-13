@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,8 +50,6 @@ public class DriveTrain extends SubsystemBase {
         mRightEncoder = mRightLeader.getEncoder(); // ^^^
 
         // manually move robot 10 feet. this value is equal to the number outputted by the smartdashboard for "Left Encoder Ticks"
-        mLeftEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR); // factor to convert encoder rotations to a linear distance the robot has traveled - this will be different for every robot
-        mRightEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR); // ^^^
 
         mLeftController = mLeftLeader.getPIDController(); // initializing PID controller
         mRightController = mRightLeader.getPIDController(); // ^^^
@@ -71,6 +70,9 @@ public class DriveTrain extends SubsystemBase {
         mRightController.setI(Constants.kI); // ^^^
         mRightController.setD(Constants.kD); // ^^^
 
+        mLeftEncoder.setPositionConversionFactor(1);
+        mRightEncoder.setPositionConversionFactor(1);
+
         mDrive.setSafetyEnabled(false); // weird error occurs when this isnt there - probably don't actually do this
     }
     
@@ -89,23 +91,31 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void setSetpoint(double s) { // method to set the setpoint for driving a distance
-        mSetpoint = s * (Constants.GEAR_BOX_RATIO / Constants.WHEEL_CIRCUMFERENCE) * Constants.ELLIOT_COEFFICIENT; // setting the setpoint for our PID controllers
+        mSetpoint = (Units.inchesToMeters(s) * (20/1.27));
     }
 
     public void drivePID(double speed) { // actually driving a specified distance
         mLeftController.setOutputRange(-speed, speed); // setting the maximum speeds of our motors while in PID control
         mRightController.setOutputRange(-speed, speed);
 
-        mLeftController.setReference(mSetpoint, CANSparkMax.ControlType.kPosition); // actually setting the drivetrain to drive the specified distance as definied by the setpoint
-        mRightController.setReference(mSetpoint, CANSparkMax.ControlType.kPosition); // ^^^
+        mLeftController.setReference(-mSetpoint, CANSparkMax.ControlType.kPosition); // actually setting the drivetrain to drive the specified distance as definied by the setpoint
+        mRightController.setReference(mSetpoint, CANSparkMax.ControlType.kPosition); // ^^^\
+        SmartDashboard.putNumber("setpoint", mSetpoint);
+
+        SmartDashboard.putNumber("Left Encoder Ticks", mLeftEncoder.getPosition()); // debug
+        SmartDashboard.putNumber("Right Encoder Ticks", mRightEncoder.getPosition());
     }
 
     public void drivePID() { // ^^^ except uses the default speeds
         mLeftController.setOutputRange(-mLeftDefault, mLeftDefault); // ^^^
         mRightController.setOutputRange(-mRightDefault, mRightDefault); // ^^^
+        SmartDashboard.putNumber("setpoint", mSetpoint);
 
-        mLeftController.setReference(mSetpoint, CANSparkMax.ControlType.kPosition); // ^^^
+        mLeftController.setReference(-mSetpoint, CANSparkMax.ControlType.kPosition); // ^^^
         mRightController.setReference(mSetpoint, CANSparkMax.ControlType.kPosition); // ^^^
+
+        SmartDashboard.putNumber("Left Encoder Ticks", mLeftEncoder.getPosition()); // debug
+        SmartDashboard.putNumber("Right Encoder Ticks", mRightEncoder.getPosition());
     }
 
     public boolean atSetpoint() { // method to check to see if the encoder position = the setpoint
@@ -119,14 +129,21 @@ public class DriveTrain extends SubsystemBase {
         mAngle = angle; // setting the instance variable to be the parameter
     }
 
-    public void turn() { // method to turn the robot to a specific angle
-        if (mAngle < mGyro.getAngle()) { // if the specified angle is less than the angle of the robot
-            mLeftLeader.set(1); // set the robot to turn
-            mRightLeader.set(-1); // ^^^
-        } else if (mAngle > mGyro.getAngle()) { // ^^^
-            mLeftLeader.set(-1); // ^^^
-            mRightLeader.set(1); // ^^^
+    public boolean turn() { // method to turn the robot to a specific angle
+        double currentAngle = mGyro.getAngle();
+        if (Math.abs(currentAngle) >= Math.abs(mAngle)) {
+            mDrive.arcadeDrive(0, 0);
+            return true;
         }
+
+        if (mAngle < 0) {
+            mDrive.arcadeDrive(-0.35, 0);
+        }
+
+        if (mAngle > 0) {
+            mDrive.arcadeDrive(0.35, 0);
+        }
+        return false;
     }
 
     public boolean atAngle() {

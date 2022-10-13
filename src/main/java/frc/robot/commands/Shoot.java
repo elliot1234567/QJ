@@ -54,8 +54,8 @@ public class Shoot extends CommandBase { // define class as child of CommandBase
             mShooter.shoot(); // call the shoot method from the shooter class
         }
 
-        else { // otherwise
-            mShooter.setSpeed(0); // shooter stays off
+        else {
+            mShooter.off();
         }
     }
 }

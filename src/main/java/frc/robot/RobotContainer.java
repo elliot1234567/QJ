@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Index;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.autoroutines.OneBall;
+import frc.robot.commands.autoroutines.ThreeBall;
+import frc.robot.commands.autoroutines.TwoBall;
 import frc.robot.subsystems.DriveTrain;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,9 +60,11 @@ public class RobotContainer {
     mDriveTrain.setDefaultCommand(mDrive);
     mIndexer.setDefaultCommand(mIndex);
     mShooter.setDefaultCommand(mShoot);
+
+    mAutoChooser.addOption("TwoBall", new TwoBall());
   }
 
   public Command getAutonomousCommand() {
-    return new OneBall();
+    return new ThreeBall();
   }
 }

@@ -7,7 +7,7 @@ public class AngleTurn extends CommandBase { // subclassing AngleTurn as a child
     private final DriveTrain mDriveTrain = DriveTrain.getInstance(); // getting the instance of the drivetrain
 
     private double mAngle; // variable for the angle
-    private boolean finished; // boolean for whether the command is finished
+    private boolean mFinished; // boolean for whether the command is finished
     
     public AngleTurn(double angle) { // constructor with parameter - this will be the angle that the drivetrain is supposed to turn to
         mAngle = angle; // setting instance variable as parameter
@@ -24,7 +24,7 @@ public class AngleTurn extends CommandBase { // subclassing AngleTurn as a child
 
     @Override
     public void execute() { // overridden method for what happens every 20 ms while the command is running
-        finished = mDriveTrain.atAngle(); // turn to the angle until you are at the angle
+        mFinished = mDriveTrain.turn(); // turn to the angle until you are at the angle
     }
 
     @Override
@@ -35,6 +35,6 @@ public class AngleTurn extends CommandBase { // subclassing AngleTurn as a child
     }
 
     public boolean isFinished() { // method for checking if the command is finished
-        return finished; // the finished variable dictates the state of this method
+        return mFinished; // the finished variable dictates the state of this method
     }
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,6 +13,7 @@ public class Indexer extends SubsystemBase { // defining class as a child of the
 
     public Indexer() { // constructor - no parameters
         mIndexer = new CANSparkMax(5, MotorType.kBrushless); // initializing the indexer motor with CAN ID 5 
+        mIndexer.setIdleMode(IdleMode.kBrake);
     }
 
     public static Indexer getInstance() { // method to get the static instance of the 
