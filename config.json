@@ -19,19 +19,19 @@
   ],
   "primary motor ports": [
     1,
-    2
+    3
   ],
   "primary motors inverted": [
     false,
     false
   ],
-  "secondary encoder inverted": false,
+  "secondary encoder inverted": true,
   "secondary encoder ports": [
     2,
     3
   ],
   "secondary motor ports": [
-    3,
+    2,
     4
   ],
   "secondary motors inverted": [

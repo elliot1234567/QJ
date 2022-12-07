@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -17,24 +21,36 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
     // robot constants
-    public static final double WHEEL_CIRCUMFERENCE = Units.inchesToMeters(6) * Math.PI; // circumference of the wheel
-    public static final double GEAR_BOX_RATIO = 10.71; // ratio of the drive gear box
-    public static final double ELLIOT_COEFFICIENT = 5.0/4.0;
-    public static final double POSITION_CONVERSION_FACTOR = 20/1.27; // position conversion factor for drive train
+    public static final double WHEEL_DIAMETER = Units.inchesToMeters(6);
+    public static final double GEAR_BOX_RATIO = 7.31; // ratio of the drive gear box
+    public static final double POSITION_CONVERSION_FACTOR = ((1.0/GEAR_BOX_RATIO) * (Math.PI*WHEEL_DIAMETER));
+    public static final double VELOCITY_CONVERSION_FACTOR = ((1.0/GEAR_BOX_RATIO) * (Math.PI*WHEEL_DIAMETER)*(1.0/60));
 
+    public static final double kMaxSpeedMetersPerSecond = 1;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
 
-    // controller Gains
-    public static final double kP = 0.1; // PID P term for drive train
-    public static final double kI = 0; // PID I term for drive train
-    public static final double kD = 0.14398; // PID D term for drive train
+    public static final double kRamseteB = 2;
+    public static final double kRamseteZeta = 0.7;
 
-    // trajectory constants
-    public static final double kMaxRPMs = 5700; // max NEO RPMs
-    public static final double kShootingTolerance = 50; // 10 rpms for shooter
+    public static final double ksVolts = 0.08134;
+    public static final double kvVoltSecondsPerMeter = 2.0181;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.36127;
 
-    // shooting constants
-    public static final double cargoRingSpeed = 0.4; // .set() value for speed at the cargo ring
-    public static final double preset1 = 0.5; // ^^^
-    public static final double preset2 = 0.75; // ^^^
-    public static final double preset3 = 1; // ^^^
+    public static final double kPDriveVel = 0.0060339;
+
+    public static final double kTrackwidthMeters = Units.inchesToMeters(22);
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+    public static final DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(
+        Constants.ksVolts,
+        Constants.kvVoltSecondsPerMeter,
+        Constants.kaVoltSecondsSquaredPerMeter),
+    Constants.kDriveKinematics,
+    10);
+
+    public static final TrajectoryConfig config = new TrajectoryConfig(
+        Constants.kMaxSpeedMetersPerSecond,
+        Constants.kMaxAccelerationMetersPerSecondSquared)
+    .setKinematics(Constants.kDriveKinematics)
+    .addConstraint(Constants.autoVoltageConstraint);
 }
