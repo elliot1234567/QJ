@@ -25,7 +25,6 @@ public class Drive extends CommandBase { // define class as child of CommandBase
 // Called when the command is initially scheduled.
   @Override
   public void initialize() { // overridden method
-    mDriveTrain.resetEncoders(); // reset encoders 
     mDriveTrain.resetGyro(); // reset gyroscope
   }
 
